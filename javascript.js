@@ -36,13 +36,15 @@ const gameBoard = (function() {
 
 //Player Module
 const playerModule = (function() {
+
+    //Player object
     const players = {
-        player1: {
+        player_1: {
             name: 'Player 1',
             mark: 'X',
         },
 
-        player2: {
+        player_2: {
             name: 'Player 2',
             mark: 'O',
         },
@@ -54,7 +56,6 @@ const playerModule = (function() {
     };
 
     const getPlayer = function(playerKey) {
-        console.log(players[playerKey]);
         return { ...players[playerKey]};
     };
 
@@ -64,9 +65,43 @@ const playerModule = (function() {
     };
 })();
 
+//Game Controller Module
+const gameController = (function() {
+
+
+    const player1 = playerModule.getPlayer('player_1');
+    const player2 = playerModule.getPlayer('player_2');
+    let currentTurn = 1;
+    let currentPlayer;
+
+
+    const startingPlayer = function(player) {
+        if(!player) {
+            if(Math.random() < 0.5) {
+                currentPlayer = player1;
+            } else {
+                currentPlayer = player2;
+            }
+        } else {
+            currentPlayer = player;
+        }
+        console.log(currentPlayer);
+    };
+
+
+
+
+
+    return {
+        startingPlayer,
+    }
+
+})();
+
 
 //Initializer
 addEventListener('DOMContentLoaded', () => {
     gameBoard.initBoard();
+    gameController.startingPlayer();
 });
 
