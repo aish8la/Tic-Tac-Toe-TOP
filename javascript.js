@@ -66,12 +66,23 @@ const playerModule = (function() {
 const gameController = (function() {
 
 
-    const player1 = playerModule.getPlayer('player_1');
-    const player2 = playerModule.getPlayer('player_2');
+    let player1 = playerModule.getPlayer('player_1');
+    let player2 = playerModule.getPlayer('player_2');
     let currentRound = 1;
     let currentTurn = 1;
     let currentPlayer;
     let winStatus;
+    let winPattern;
+    let winConditions = {
+        row1: [0, 1, 2],
+        row2: [3, 4, 5],
+        row3: [6, 7, 8],
+        column1: [0, 3, 6],
+        column2: [1, 4, 7],
+        column3: [2, 5, 8],
+        diagonal1: [0, 4, 8],
+        diagonal2: [2, 4, 6]
+    };
 
     const startingPlayer = function(player) {
         if(!player) {
@@ -85,7 +96,7 @@ const gameController = (function() {
         }
     };
 
-    const playerGame = function(player) {
+    const playGame = function(player) {
         roundInitiator(player);
     };
 
@@ -93,13 +104,13 @@ const gameController = (function() {
         gameBoard.initBoard();
         startingPlayer(player);
         currentTurn = 1;
+        winStatus = undefined;
         //attach event listener to cells here
     };
     
     const turnInitiator = function() {
         if (winStatus !== 'win') {
             currentPlayer = (currentPlayer === player1) ? player2 : player1;
-            messageBox();
         } else {
             currentRound++;
             roundInitiator();
@@ -108,17 +119,44 @@ const gameController = (function() {
 
     const playerMove = function(cell) {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
-            currentTurn++;
-            turnInitiator();
+            winCheck();
         } else return 'cell is occupied';// add proper error handling here
     };
 
+    const winCheck = function() {
+        const winValue = (currentPlayer.markValue * 3);
+        const winCombinations = winConditions;
+        const board = gameBoard.getBoardState();
+
+        for (const key in winCombinations) {
+            if (winCombinations.hasOwnProperty(key)) {
+                let boardValue = 0;
+                const winCombo = winCombinations[key];
+                for (i = 0; i < winCombo.length; i++) {
+                    const indexNum = winCombo[i];
+                    boardValue += board[indexNum];
+                };
+                if (boardValue === winValue) {
+                    winStatus = 'win';
+                    winPattern = key;
+                    turnInitiator();
+                    return;
+                };
+            };
+        };
+        currentTurn++;
+        turnInitiator();
+    };
 
     const messageBox = function() {
+        console.log('THIS IS THE START OF MESSAGE BOX')
         console.log(`Round ${currentRound}`);
         console.log(`Player: ${currentPlayer.name} is playing`);
         console.log(`It is turn ${currentTurn}`);
+        console.log(winStatus);
+        console.log(winPattern);
         console.log(`This is the Board ${gameBoard.getBoardState()}`);
+        console.log('THIS IS THE END OF MESSAGE BOX')
     };
 
 
@@ -126,7 +164,9 @@ const gameController = (function() {
         startingPlayer,
         playerMove,
         messageBox,
-        roundInitiator
+        roundInitiator,
+        playGame,
+        winCheck,
     }
 
 })();
@@ -138,3 +178,10 @@ addEventListener('DOMContentLoaded', () => {
     gameBoard.initBoard();
 });
 
+gameController.playGame();
+gameController.playerMove(0);
+gameController.playerMove(5);
+gameController.playerMove(1);
+gameController.playerMove(6);
+gameController.playerMove(2);
+gameController.messageBox();
