@@ -71,6 +71,7 @@ const gameController = (function() {
     let currentRound = 1;
     let currentTurn = 1;
     let currentPlayer;
+    let winStatus;
 
     const startingPlayer = function(player) {
         if(!player) {
@@ -84,19 +85,24 @@ const gameController = (function() {
         }
     };
 
+    const playerGame = function(player) {
+        roundInitiator(player);
+    };
+
     const roundInitiator = function(player) {
+        gameBoard.initBoard();
         startingPlayer(player);
         currentTurn = 1;
-        turnInitiator();
+        //attach event listener to cells here
     };
     
     const turnInitiator = function() {
-        if (currentTurn <= 2) {
-            if (currentTurn === 2) {
-                currentPlayer = (currentPlayer === player1) ? player2 : player1;
-            };
+        if (winStatus !== 'win') {
+            currentPlayer = (currentPlayer === player1) ? player2 : player1;
+            messageBox();
         } else {
-            return 'Round Ends'
+            currentRound++;
+            roundInitiator();
         };
     };
 
@@ -104,7 +110,7 @@ const gameController = (function() {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
             currentTurn++;
             turnInitiator();
-        } else return 'cell is occupied';
+        } else return 'cell is occupied';// add proper error handling here
     };
 
 
