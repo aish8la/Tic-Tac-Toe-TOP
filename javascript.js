@@ -137,14 +137,18 @@ const gameController = (function() {
                     boardValue += board[indexNum];
                 };
                 if (boardValue === winValue) {
-                    winStatus = 'win';
                     winPattern = key;
-                    turnInitiator();
+                    winAction();
                     return;
                 };
             };
         };
         currentTurn++;
+        turnInitiator();
+    };
+
+    const winAction = function() {
+        winStatus = 'win';
         turnInitiator();
     };
 
@@ -178,6 +182,8 @@ addEventListener('DOMContentLoaded', () => {
     gameBoard.initBoard();
 });
 
+
+// win pattern game play for testing
 gameController.playGame();
 gameController.playerMove(0);
 gameController.playerMove(5);
