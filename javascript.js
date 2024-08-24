@@ -10,16 +10,11 @@ const gameBoard = (function() {
         console.log(board);
     };
 
-    function illegalMove(mark) {
-        console.log(`that cell already contains a ${mark}`);
-        getBoardState();
-    };
-
     function addMark(playerMark, boardIndex) {
         if(!board[boardIndex]) {
             board.splice(boardIndex, 1, playerMark);
-            return getBoardState();
-        } else illegalMove(board[boardIndex]);
+            return 'cell_marked';
+        } else return 'cell_occupied';
     };
 
     function getBoardState() {
@@ -41,12 +36,14 @@ const playerModule = (function() {
     const players = {
         player_1: {
             name: 'Player 1',
-            mark: 'X',
+            markType: 'X',
+            markValue: -1,
         },
 
         player_2: {
             name: 'Player 2',
             mark: 'O',
+            markValue: 1,
         },
     };
 
@@ -71,9 +68,9 @@ const gameController = (function() {
 
     const player1 = playerModule.getPlayer('player_1');
     const player2 = playerModule.getPlayer('player_2');
+    let currentRound = 1;
     let currentTurn = 1;
     let currentPlayer;
-
 
     const startingPlayer = function(player) {
         if(!player) {
@@ -85,23 +82,53 @@ const gameController = (function() {
         } else {
             currentPlayer = player;
         }
-        console.log(currentPlayer);
+    };
+
+    const roundInitiator = function(player) {
+        startingPlayer(player);
+        currentTurn = 1;
+        turnInitiator();
+    };
+    
+    const turnInitiator = function() {
+        if (currentTurn <= 2) {
+            if (currentTurn === 2) {
+                currentPlayer = (currentPlayer === player1) ? player2 : player1;
+            };
+        } else {
+            return 'Round Ends'
+        };
+    };
+
+    const playerMove = function(cell) {
+        if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
+            currentTurn++;
+            turnInitiator();
+        } else return 'cell is occupied';
     };
 
 
-
+    const messageBox = function() {
+        console.log(`Round ${currentRound}`);
+        console.log(`Player: ${currentPlayer.name} is playing`);
+        console.log(`It is turn ${currentTurn}`);
+        console.log(`This is the Board ${gameBoard.getBoardState()}`);
+    };
 
 
     return {
         startingPlayer,
+        playerMove,
+        messageBox,
+        roundInitiator
     }
 
 })();
 
 
+
 //Initializer
 addEventListener('DOMContentLoaded', () => {
     gameBoard.initBoard();
-    gameController.startingPlayer();
 });
 
