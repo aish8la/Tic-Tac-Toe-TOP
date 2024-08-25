@@ -43,12 +43,18 @@ const playerModule = (function() {
             name: 'Player 1',
             markType: 'X',
             markValue: -1,
+            wins: 0,
+            loss: 0,
+            draws: 0,
         },
 
         player_2: {
             name: 'Player 2',
             mark: 'O',
             markValue: 1,
+            wins: 0,
+            loss: 0,
+            draws: 0,
         },
     };
 
@@ -61,9 +67,22 @@ const playerModule = (function() {
         return { ...players[playerKey]};
     };
 
+    const winScoreRecord = function(winningPlayer) {
+        winner = winningPlayer;
+        loser = winningPlayer === players.player_1 ? players.player_2 : players.player_1;
+        winner.wins++;
+        loser.loss++;
+    };
+
+    const drawsRecord = function() {
+        players.player_1.draws++;
+        players.player_2.draws++;
+    };
+
     return {
         setName,
         getPlayer,
+        winScoreRecord,
     };
 })();
 
@@ -71,8 +90,8 @@ const playerModule = (function() {
 const gameController = (function() {
 
 
-    let player1 = playerModule.getPlayer('player_1');
-    let player2 = playerModule.getPlayer('player_2');
+    let player1;
+    let player2;
     let currentRound = 1;
     let currentTurn = 1;
     let currentPlayer;
@@ -87,6 +106,11 @@ const gameController = (function() {
         column3: [2, 5, 8],
         diagonal1: [0, 4, 8],
         diagonal2: [2, 4, 6]
+    };
+
+    const updatePlayers = function() {
+        player1 = playerModule.getPlayer('player_1');
+        player2 = playerModule.getPlayer('player_2');
     };
 
     const startingPlayer = function(player) {
@@ -108,6 +132,7 @@ const gameController = (function() {
     const roundInitiator = function(player) {
         if (currentRound <= 5) {
             gameBoard.initBoard();
+            updatePlayers();
             startingPlayer(player);
             currentTurn = 1;
             winStatus = undefined;
