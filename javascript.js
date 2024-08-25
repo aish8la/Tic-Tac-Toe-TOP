@@ -40,6 +40,7 @@ const playerModule = (function() {
     //Player object
     const players = {
         player_1: {
+            keyName: 'player_1',
             name: 'Player 1',
             markType: 'X',
             markValue: -1,
@@ -49,6 +50,7 @@ const playerModule = (function() {
         },
 
         player_2: {
+            keyName: 'player_2',
             name: 'Player 2',
             mark: 'O',
             markValue: 1,
@@ -60,7 +62,6 @@ const playerModule = (function() {
 
     const setName = function(playerKey, newName) {
         players[playerKey].name = newName;
-        console.log(players);
     };
 
     const getPlayer = function(playerKey) {
@@ -68,10 +69,10 @@ const playerModule = (function() {
     };
 
     const winScoreRecord = function(winningPlayer) {
-        winner = winningPlayer;
-        loser = winningPlayer === players.player_1 ? players.player_2 : players.player_1;
-        winner.wins++;
-        loser.loss++;
+        winnerKey = winningPlayer.keyName;
+        loserKey = winningPlayer.keyName === players.player_1.keyName ? players.player_2.keyName : players.player_1.keyName;
+        players[winnerKey].wins++;
+        players[loserKey].loss++;
     };
 
     const drawsRecord = function() {
@@ -79,10 +80,21 @@ const playerModule = (function() {
         players.player_2.draws++;
     };
 
+    const resetScore = function() {
+        players.player_1.wins = 0;
+        players.player_1.loss = 0;
+        players.player_1.draws = 0;
+        players.player_2.wins = 0;
+        players.player_2.loss = 0;
+        players.player_2.draws = 0;
+    };
+
     return {
         setName,
         getPlayer,
         winScoreRecord,
+        drawsRecord,
+        resetScore,
     };
 })();
 
@@ -122,10 +134,11 @@ const gameController = (function() {
             }
         } else {
             currentPlayer = player;
-        }
+        };
     };
 
     const playGame = function(player) {
+        playerModule.resetScore();
         roundInitiator(player);
     };
 
@@ -191,15 +204,15 @@ const gameController = (function() {
     };
 
     const drawHandler = function() {
-        winStatus = 'draw';
+        playerModule.drawsRecord();
         currentRound++;
         roundInitiator();
-        console.log('Draw');
-    } ;
+    };
 
     const winAction = function() {
         winStatus = 'win';
-        messageBox();
+        playerModule.winScoreRecord(currentPlayer);
+        messageBox();// test message 
         turnInitiator();
     };
 
@@ -236,13 +249,13 @@ addEventListener('DOMContentLoaded', () => {
 
 // win pattern game play for testing
 gameController.playGame();
-gameController.playerMove(6);
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
 gameController.playerMove(3);
 gameController.playerMove(4);
 gameController.playerMove(5);
+gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
 gameController.messageBox();
