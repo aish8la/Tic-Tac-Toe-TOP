@@ -21,11 +21,16 @@ const gameBoard = (function() {
         return board.slice();
     };
 
+    function isBoardFull() {
+        return !board.includes(0);
+    };
+
     return {
         addMark,
         getBoardState,
         initBoard,
-    }
+        isBoardFull,
+    };
 
 })();
 
@@ -101,16 +106,24 @@ const gameController = (function() {
     };
 
     const roundInitiator = function(player) {
-        gameBoard.initBoard();
-        startingPlayer(player);
-        currentTurn = 1;
-        winStatus = undefined;
-        //attach event listener to cells here
+        if (currentRound <= 5) {
+            gameBoard.initBoard();
+            startingPlayer(player);
+            currentTurn = 1;
+            winStatus = undefined;
+            //remove old event listeners and attach new event listener to cells here        
+        } else {
+            // remove event listeners 
+            // show winning player
+            console.log('Game is Over Message');
+        };
+       
     };
     
     const turnInitiator = function() {
         if (winStatus !== 'win') {
             currentPlayer = (currentPlayer === player1) ? player2 : player1;
+            //remove old event listeners and attach new event listener to cells here
         } else {
             currentRound++;
             roundInitiator();
@@ -143,12 +156,25 @@ const gameController = (function() {
                 };
             };
         };
-        currentTurn++;
-        turnInitiator();
+        if (gameBoard.isBoardFull()) {
+            drawHandler();
+        } else {
+            currentTurn++;
+            turnInitiator();
+        };
+
     };
+
+    const drawHandler = function() {
+        winStatus = 'draw';
+        currentRound++;
+        roundInitiator();
+        console.log('Draw');
+    } ;
 
     const winAction = function() {
         winStatus = 'win';
+        messageBox();
         turnInitiator();
     };
 
@@ -185,9 +211,13 @@ addEventListener('DOMContentLoaded', () => {
 
 // win pattern game play for testing
 gameController.playGame();
-gameController.playerMove(0);
-gameController.playerMove(5);
-gameController.playerMove(1);
 gameController.playerMove(6);
+gameController.playerMove(0);
+gameController.playerMove(1);
 gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(7);
+gameController.playerMove(8);
 gameController.messageBox();
