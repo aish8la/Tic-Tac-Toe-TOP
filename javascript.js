@@ -110,7 +110,6 @@ const gameController = (function() {
     let currentRound = 0;
     let currentTurn = 1;
     let currentPlayer;
-    let winStatus;
     let winPattern;
     let winConditions = {
         row1: [0, 1, 2],
@@ -229,17 +228,6 @@ const gameController = (function() {
         } else return `Player: ${player2.name} Wins with ${player2.wins} Wins`;
     };
 
-    // const messageBox = function() {
-    //     console.log('------ THIS IS THE START OF MESSAGE BOX -----')
-    //     console.log(`Round ${currentRound}`);
-    //     console.log(`Player: ${currentPlayer.name} is playing`);
-    //     console.log(`It is turn ${currentTurn}`);
-    //     console.log(winStatus);
-    //     console.log(winPattern);
-    //     console.log(`This is the Board ${gameBoard.getBoardState()}`);
-    //     console.log('-------THIS IS THE END OF MESSAGE BOX -----')
-    // };
-
     const quitGame = function() {
         gameBoard.resetScore();
         currentRound = 1;
@@ -247,7 +235,6 @@ const gameController = (function() {
 
     return {
         playerMove,
-        // messageBox,
         playGame,
         quitGame,
     };
@@ -263,64 +250,16 @@ addEventListener('DOMContentLoaded', () => {
 
 
 // win pattern game play for testing
+let drawArray = [0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
+    0, 1, 2, 3, 4, 6, 5, 8, 7,   // Draw Combination 2
+    0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
+    0, 1, 2, 3, 4, 6, 5, 8, 7, 
+    0, 1, 2, 5, 3, 4, 6, 8, 7,   // Draw Combination 1
+    0, 1, 2, 3, 4, 6, 5, 8, 7, 
+];   // Draw Combination 4
+   
+
 gameController.playGame();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
-gameController.playerMove(0);
-gameController.playerMove(1);
-gameController.playerMove(2);
-gameController.playerMove(3);
-gameController.playerMove(4);
-gameController.playerMove(5);
-gameController.playerMove(6);
-gameController.playerMove(7);
-gameController.playerMove(8);
-// gameController.messageBox();
+for (let i = 0; i < drawArray.length; i++) {
+    gameController.playerMove(drawArray[i]);
+}
