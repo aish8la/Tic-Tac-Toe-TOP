@@ -70,7 +70,9 @@ const playerModule = (function() {
 
     const winScoreRecord = function(winningPlayer) {
         winnerKey = winningPlayer.keyName;
-        loserKey = winningPlayer.keyName === players.player_1.keyName ? players.player_2.keyName : players.player_1.keyName;
+        loserKey = winningPlayer.keyName === players.player_1.keyName ? 
+                                             players.player_2.keyName : 
+                                             players.player_1.keyName;
         players[winnerKey].wins++;
         players[loserKey].loss++;
     };
@@ -139,21 +141,23 @@ const gameController = (function() {
 
     const playGame = function(player) {
         playerModule.resetScore();
+        currentRound = 1;
         roundInitiator(player);
     };
 
     const roundInitiator = function(player) {
+        updatePlayers();
         if (currentRound <= 5) {
             gameBoard.initBoard();
-            updatePlayers();
             startingPlayer(player);
             currentTurn = 1;
             winStatus = undefined;
             //remove old event listeners and attach new event listener to cells here        
         } else {
             // remove event listeners 
-            // show winning player
+            console.log(overallWinnerCheck());
             console.log('Game is Over Message');
+            playGame();
         };
        
     };
@@ -216,15 +220,24 @@ const gameController = (function() {
         turnInitiator();
     };
 
+    const overallWinnerCheck = function() {
+        if (player1.wins === player2.wins) {
+            return 'Draw'; // add a function to update the message box
+        };
+        if (player1.wins > player2.wins) {
+            return `Player: ${player1.name} Wins with ${player1.wins} Wins`;
+        } else return `Player: ${player2.name} Wins with ${player2.wins} Wins`;
+    };
+
     const messageBox = function() {
-        console.log('THIS IS THE START OF MESSAGE BOX')
+        console.log('------ THIS IS THE START OF MESSAGE BOX -----')
         console.log(`Round ${currentRound}`);
         console.log(`Player: ${currentPlayer.name} is playing`);
         console.log(`It is turn ${currentTurn}`);
         console.log(winStatus);
         console.log(winPattern);
         console.log(`This is the Board ${gameBoard.getBoardState()}`);
-        console.log('THIS IS THE END OF MESSAGE BOX')
+        console.log('-------THIS IS THE END OF MESSAGE BOX -----')
     };
 
 
@@ -249,6 +262,46 @@ addEventListener('DOMContentLoaded', () => {
 
 // win pattern game play for testing
 gameController.playGame();
+gameController.playerMove(0);
+gameController.playerMove(1);
+gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(6);
+gameController.playerMove(7);
+gameController.playerMove(8);
+gameController.messageBox();
+gameController.playerMove(0);
+gameController.playerMove(1);
+gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(6);
+gameController.playerMove(7);
+gameController.playerMove(8);
+gameController.messageBox();
+gameController.playerMove(0);
+gameController.playerMove(1);
+gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(6);
+gameController.playerMove(7);
+gameController.playerMove(8);
+gameController.messageBox();
+gameController.playerMove(0);
+gameController.playerMove(1);
+gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(6);
+gameController.playerMove(7);
+gameController.playerMove(8);
+gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
