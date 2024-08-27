@@ -127,6 +127,7 @@ const gameController = (function() {
         player2 = playerModule.getPlayer('player_2');
     };
 
+//Will determine the starting player if based on argument or if empty randomly selects the starting player.
     const startingPlayer = function(player) {
         if(!player) {
             if(Math.random() < 0.5) {
@@ -152,24 +153,19 @@ const gameController = (function() {
             startingPlayer(player);
             currentTurn = 1;
             winStatus = undefined;
+            console.log(`Round ${currentRound}`); // round text updater function
             //remove old event listeners and attach new event listener to cells here        
         } else {
             // remove event listeners 
-            console.log(overallWinnerCheck());
-            console.log('Game is Over Message');
-            playGame();
+            console.log(overallWinnerCheck()); // once game ends give option to reset
         };
        
     };
     
     const turnInitiator = function() {
-        if (winStatus !== 'win') {
             currentPlayer = (currentPlayer === player1) ? player2 : player1;
             //remove old event listeners and attach new event listener to cells here
-        } else {
-            currentRound++;
-            roundInitiator();
-        };
+            console.log(`Current Turn: ${currentPlayer.name}`);// call the function to update the text here
     };
 
     const playerMove = function(cell) {
@@ -214,41 +210,43 @@ const gameController = (function() {
     };
 
     const winAction = function() {
-        winStatus = 'win';
         playerModule.winScoreRecord(currentPlayer);
-        messageBox();// test message 
-        turnInitiator();
+        // messageBox();// test message 
+        roundInitiator();
     };
 
     const overallWinnerCheck = function() {
+        updatePlayers();
         if (player1.wins === player2.wins) {
-            return 'Draw'; // add a function to update the message box
+            return 'It\'s a Draw'; // add a function to update the message box
         };
         if (player1.wins > player2.wins) {
             return `Player: ${player1.name} Wins with ${player1.wins} Wins`;
         } else return `Player: ${player2.name} Wins with ${player2.wins} Wins`;
     };
 
-    const messageBox = function() {
-        console.log('------ THIS IS THE START OF MESSAGE BOX -----')
-        console.log(`Round ${currentRound}`);
-        console.log(`Player: ${currentPlayer.name} is playing`);
-        console.log(`It is turn ${currentTurn}`);
-        console.log(winStatus);
-        console.log(winPattern);
-        console.log(`This is the Board ${gameBoard.getBoardState()}`);
-        console.log('-------THIS IS THE END OF MESSAGE BOX -----')
+    // const messageBox = function() {
+    //     console.log('------ THIS IS THE START OF MESSAGE BOX -----')
+    //     console.log(`Round ${currentRound}`);
+    //     console.log(`Player: ${currentPlayer.name} is playing`);
+    //     console.log(`It is turn ${currentTurn}`);
+    //     console.log(winStatus);
+    //     console.log(winPattern);
+    //     console.log(`This is the Board ${gameBoard.getBoardState()}`);
+    //     console.log('-------THIS IS THE END OF MESSAGE BOX -----')
+    // };
+
+    const quitGame = function() {
+        gameBoard.resetScore();
+        currentRound = 1;
     };
 
-
     return {
-        startingPlayer,
         playerMove,
-        messageBox,
-        roundInitiator,
+        // messageBox,
         playGame,
-        winCheck,
-    }
+        quitGame,
+    };
 
 })();
 
@@ -271,7 +269,7 @@ gameController.playerMove(5);
 gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
-gameController.messageBox();
+// gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
@@ -281,7 +279,7 @@ gameController.playerMove(5);
 gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
-gameController.messageBox();
+// gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
@@ -291,7 +289,7 @@ gameController.playerMove(5);
 gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
-gameController.messageBox();
+// gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
@@ -301,7 +299,7 @@ gameController.playerMove(5);
 gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
-gameController.messageBox();
+// gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
@@ -311,4 +309,4 @@ gameController.playerMove(5);
 gameController.playerMove(6);
 gameController.playerMove(7);
 gameController.playerMove(8);
-gameController.messageBox();
+// gameController.messageBox();
