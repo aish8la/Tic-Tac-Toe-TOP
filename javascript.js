@@ -106,7 +106,8 @@ const gameController = (function() {
 
     let player1;
     let player2;
-    let currentRound = 1;
+    let maxRounds = 5;
+    let currentRound = 0;
     let currentTurn = 1;
     let currentPlayer;
     let winStatus;
@@ -142,13 +143,14 @@ const gameController = (function() {
 
     const playGame = function(player) {
         playerModule.resetScore();
-        currentRound = 1;
+        currentRound = 0;
         roundInitiator(player);
     };
 
     const roundInitiator = function(player) {
         updatePlayers();
-        if (currentRound <= 5) {
+        currentRound++;
+        if (currentRound <= maxRounds) {
             gameBoard.initBoard();
             startingPlayer(player);
             currentTurn = 1;
@@ -169,9 +171,11 @@ const gameController = (function() {
     };
 
     const playerMove = function(cell) {
+        if (currentRound <= maxRounds) {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
             winCheck();
         } else return 'cell is occupied';// add proper error handling here
+        };
     };
 
     const winCheck = function() {
@@ -205,13 +209,13 @@ const gameController = (function() {
 
     const drawHandler = function() {
         playerModule.drawsRecord();
-        currentRound++;
+        console.log(`Round ${currentRound} is a Draw`); // text update function here
         roundInitiator();
     };
 
     const winAction = function() {
         playerModule.winScoreRecord(currentPlayer);
-        // messageBox();// test message 
+        console.log(`${currentPlayer.name} Wins Round: ${currentRound}.`); //call function to update the text
         roundInitiator();
     };
 
@@ -260,6 +264,16 @@ addEventListener('DOMContentLoaded', () => {
 
 // win pattern game play for testing
 gameController.playGame();
+gameController.playerMove(0);
+gameController.playerMove(1);
+gameController.playerMove(2);
+gameController.playerMove(3);
+gameController.playerMove(4);
+gameController.playerMove(5);
+gameController.playerMove(6);
+gameController.playerMove(7);
+gameController.playerMove(8);
+// gameController.messageBox();
 gameController.playerMove(0);
 gameController.playerMove(1);
 gameController.playerMove(2);
