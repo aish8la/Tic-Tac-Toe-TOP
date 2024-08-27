@@ -174,8 +174,8 @@ const gameController = (function() {
         if (currentRound <= maxRounds) {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
             winCheck();
-        } else return 'cell is occupied';// add proper error handling here
-        };
+        } else console.log( 'cell is occupied');// add proper error handling here
+        } else console.log('Game has ended. Please Quit to start a new game'); // add a proper error handler here
     };
 
     const winCheck = function() {
