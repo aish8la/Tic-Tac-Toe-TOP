@@ -18,12 +18,13 @@ body {
 .current-display {
     border: 5px solid black;
     border-radius: 15px;
-    max-width: 80vw;
+    max-width: 90vw;
     flex-shrink: 0;
     padding: 25px;
     display: flex;  
     flex-direction: column;
     gap: 20px;
+    align-items: center;
 }
 
 .start-btn {
@@ -65,3 +66,50 @@ body {
     border-radius: 5px;
     border: 2px solid rgb(153, 153, 153);
 }
+
+.round-indicator {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.messages-box {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cell-list {
+    grid-template-columns: repeat(3, minmax(5vw, 150px));
+    grid-template-rows: repeat(3, minmax(5vw, 150px));
+    grid-auto-flow: column;
+    display: grid;
+    border: 2px solid black;
+    padding: 0px;
+
+}
+
+.cell-list > li {
+    list-style: none;
+    border: 2px solid black;
+}
+
+.game-score {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.score-title {
+    font-size: 1.10rem;
+    font-weight: 600;
+    margin: 10px 0px;
+}
+
+.score-ctn {
+    font-weight: 600;
+    margin: 5px 0;
+}
+
+
