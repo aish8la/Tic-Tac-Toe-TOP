@@ -91,12 +91,18 @@ const playerModule = (function() {
         players.player_2.draws = 0;
     };
 
+    const resetName = function() {
+        players.player_1.name = 'Player 1';
+        players.player_2.name = 'Player 2';
+    };
+
     return {
         setName,
         getPlayer,
         winScoreRecord,
         drawsRecord,
         resetScore,
+        resetName,
     };
 })();
 
@@ -145,7 +151,7 @@ const gameController = (function() {
         playerModule.resetScore();
         currentRound = 0;
         roundInitiator();
-    }
+    };
 
     function roundInitiator() {
         displayController.nextRoundDisabler(roundInitiator);
@@ -237,8 +243,10 @@ const gameController = (function() {
     };
 
     const quitGame = function() {
-        gameBoard.resetScore();
-        currentRound = 1;
+        playerModule.resetScore();
+        playerModule.resetName();
+        displayController.disableBoard();
+        displayController.nextRoundDisabler(roundInitiator);
     };
 
     return {
@@ -259,13 +267,23 @@ const displayController = (function() {
     const roundTextBox = document.querySelector('.round-indicator');
     const nextRoundBtn = document.querySelector('#next-round');
     const resetBtn = document.querySelector('#reset');
-    
-    startButton.addEventListener('click', function startGame() {
+
+    const startGame = function() {
         let startPlayer;
         updateNames(playerNameInputs);
         gameController.playGame(startPlayer);
         toggleDisplay();
         startButton.removeEventListener('click', startGame);
+    }
+
+    function initTitle() {
+        startButton.addEventListener('click', startGame);
+    };
+
+    resetBtn.addEventListener('click', () => {
+        gameController.quitGame();
+        toggleDisplay();
+        initTitle();
     });
 
     const enableBoard = function() {
@@ -344,6 +362,7 @@ const displayController = (function() {
         enableBoard,
         disableBoard,
         updateRoundTextBox,
+        initTitle,
     };
 
 })(); 
@@ -353,6 +372,7 @@ const displayController = (function() {
 //Initializer
 addEventListener('DOMContentLoaded', () => {
     gameBoard.initBoard();
+    displayController.initTitle();
 });
 
 
