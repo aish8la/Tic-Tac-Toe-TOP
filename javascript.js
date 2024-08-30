@@ -247,9 +247,14 @@ const displayController = (function() {
     let startButton = document.querySelector('[data-btn="start-btn"]');
     
     
-    startButton.addEventListener('click', () => {
+    const toggleDisplay = function () {
         titleContainer.classList.toggle('hidden-ctn');
         gameContainer.classList.toggle('hidden-ctn');
+    };
+
+    startButton.addEventListener('click', function startGame() {
+        toggleDisplay();
+        startButton.removeEventListener('click', startButton);
     });
 })(); 
 
