@@ -140,33 +140,25 @@ const gameController = (function() {
         };
     };
 
-    const playGame = function(player) {
+    function playGame(player) {
         playerModule.resetScore();
         currentRound = 0;
         roundInitiator(player);
-    };
+    }
 
-    const roundInitiator = function(player) {
+    function roundInitiator(player) {
         updatePlayers();
         currentRound++;
-        if (currentRound <= maxRounds) {
-            gameBoard.initBoard();
-            displayController.renderBoard();
-            startingPlayer(player);
-            currentTurn = 1;
-            winStatus = undefined;
-            console.log(`Round ${currentRound}`); // round text updater function
-            //remove old event listeners and attach new event listener to cells here        
-        } else {
-            // remove event listeners 
-            console.log(overallWinnerCheck()); // once game ends give option to reset
-        };
-       
+        gameBoard.initBoard();
+        displayController.renderBoard();
+        startingPlayer(player);
+        currentTurn = 1;
+        winStatus = undefined;
+        console.log(`Round ${currentRound}`); // round text updater function
     };
     
     const turnInitiator = function() {
             currentPlayer = (currentPlayer === player1) ? player2 : player1;
-            //remove old event listeners and attach new event listener to cells here
             console.log(`Current Turn: ${currentPlayer.name}`);// call the function to update the text here
     };
 
@@ -209,16 +201,28 @@ const gameController = (function() {
 
     };
 
+    const nextRound = function () {
+        if (currentRound < maxRounds) {
+            //call to function for next round button 
+
+            //remove old event listeners and attach new event listener to cells here        
+        } else {
+            // remove event listeners 
+            console.log(overallWinnerCheck()); // once game ends give option to reset
+        };
+
+    };
+
     const drawHandler = function() {
         playerModule.drawsRecord();
         console.log(`Round ${currentRound} is a Draw`); // text update function here
-        roundInitiator();
+        nextRound();
     };
 
     const winAction = function() {
         playerModule.winScoreRecord(currentPlayer);
         console.log(`${currentPlayer.name} Wins Round: ${currentRound}.`); //call function to update the text
-        roundInitiator();
+        nextRound();
     };
 
     const overallWinnerCheck = function() {
