@@ -94,6 +94,7 @@ body {
 .messages-box {
     font-size: 1rem;
     font-weight: 600;
+    margin: 30px;
 }
 
 .cell-list {
