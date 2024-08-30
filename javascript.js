@@ -245,17 +245,28 @@ const displayController = (function() {
     let titleContainer = document.querySelector('.title-ctn');
     let gameContainer = document.querySelector('.game-ctn');
     let startButton = document.querySelector('[data-btn="start-btn"]');
+    let playerNameInputs = document.querySelectorAll('input.player-name');
+    console.log(playerNameInputs);
     
-    
+    let updateNames = function(inputElements) {
+      for (input of inputElements) {
+        if(input.value) {
+            playerModule.setName(input.name, input.value);
+        };
+      };
+    };
+
     const toggleDisplay = function () {
         titleContainer.classList.toggle('hidden-ctn');
         gameContainer.classList.toggle('hidden-ctn');
     };
 
     startButton.addEventListener('click', function startGame() {
+        updateNames(playerNameInputs);
         toggleDisplay();
         startButton.removeEventListener('click', startButton);
     });
+
 })(); 
 
 
