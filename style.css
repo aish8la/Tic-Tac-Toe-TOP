@@ -100,7 +100,7 @@ body {
 .cell-list {
     grid-template-columns: repeat(3, minmax(5vw, 150px));
     grid-template-rows: repeat(3, minmax(5vw, 150px));
-    grid-auto-flow: column;
+    grid-auto-flow: row;
     display: grid;
     border: 2px solid black;
     padding: 0px;
@@ -132,7 +132,7 @@ body {
 }
 
 .hidden-ctn {
-    /* display: none; */
+    display: none;
 }
 
 .game-control-panel {
