@@ -52,7 +52,7 @@ const playerModule = (function() {
         player_2: {
             keyName: 'player_2',
             name: 'Player 2',
-            mark: 'O',
+            markType: 'O',
             markValue: 1,
             wins: 0,
             loss: 0,
@@ -169,9 +169,10 @@ const gameController = (function() {
             console.log(`Current Turn: ${currentPlayer.name}`);// call the function to update the text here
     };
 
-    const playerMove = function(cell) {
+    const playerMove = function(cell, Element) {
         if (currentRound <= maxRounds) {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
+            displayController.updateCell(Element, currentPlayer.markType);
             winCheck();
         } else console.log( 'cell is occupied');// add proper error handling here
         } else console.log('Game has ended. Please Quit to start a new game'); // add a proper error handler here
@@ -246,8 +247,21 @@ const displayController = (function() {
     let gameContainer = document.querySelector('.game-ctn');
     let startButton = document.querySelector('[data-btn="start-btn"]');
     let playerNameInputs = document.querySelectorAll('input.player-name');
+    let gameBoard = document.querySelector('#game-board-ctn');
     console.log(playerNameInputs);
     
+    startButton.addEventListener('click', function startGame() {
+        let startPlayer;
+        updateNames(playerNameInputs);
+        gameController.playGame(startPlayer);
+        toggleDisplay();
+        startButton.removeEventListener('click', startButton);
+    });
+
+    gameBoard.addEventListener('click', function clickCell(e) {
+        markCell(e);
+    });
+
     let updateNames = function(inputElements) {
       for (input of inputElements) {
         if(input.value) {
@@ -261,12 +275,22 @@ const displayController = (function() {
         gameContainer.classList.toggle('hidden-ctn');
     };
 
-    startButton.addEventListener('click', function startGame() {
-        updateNames(playerNameInputs);
-        toggleDisplay();
-        startButton.removeEventListener('click', startButton);
-    });
+    const markCell = function(e) {
+        const targetElement = e.target;
+        if (targetElement.getAttribute('data-type') === 'cell') {
+            const cellNum = targetElement.getAttribute('data-cell-num');
+            if (gameController.playerMove(cellNum, targetElement) === 'cellMarked') {
+                
+            }
+        };
+    };
 
+    const updateCell = function(cellElement, mark) {
+        cellElement.textContent = mark;
+    };
+    return {
+        updateCell,
+    };
 })(); 
 
 
@@ -278,16 +302,16 @@ addEventListener('DOMContentLoaded', () => {
 
 
 // win pattern game play for testing
-let drawArray = [0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
-    0, 1, 2, 3, 4, 6, 5, 8, 7,   // Draw Combination 2
-    0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
-    0, 1, 2, 3, 4, 6, 5, 8, 7, 
-    0, 1, 2, 5, 3, 4, 6, 8, 7,   // Draw Combination 1
-    0, 1, 2, 3, 4, 6, 5, 8, 7, 
-];   // Draw Combination 4
+// let drawArray = [0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
+//     0, 1, 2, 3, 4, 6, 5, 8, 7,   // Draw Combination 2
+//     0, 1, 2, 4, 3, 5, 7, 6, 8,   // Draw Combination 1
+//     0, 1, 2, 3, 4, 6, 5, 8, 7, 
+//     0, 1, 2, 5, 3, 4, 6, 8, 7,   // Draw Combination 1
+//     0, 1, 2, 3, 4, 6, 5, 8, 7, 
+// ];   // Draw Combination 4
    
 
-gameController.playGame();
-for (let i = 0; i < drawArray.length; i++) {
-    gameController.playerMove(drawArray[i]);
-}
+// gameController.playGame();
+// for (let i = 0; i < drawArray.length; i++) {
+//     gameController.playerMove(drawArray[i]);
+// }
