@@ -199,6 +199,7 @@ const gameController = (function() {
                 };
             };
         };
+
         if (gameBoard.isBoardFull()) {
             drawHandler();
         } else {
@@ -323,7 +324,7 @@ const displayController = (function() {
 
 //Initializer
 addEventListener('DOMContentLoaded', () => {
-    // gameBoard.initBoard();
+    gameBoard.initBoard();
 });
 
 
