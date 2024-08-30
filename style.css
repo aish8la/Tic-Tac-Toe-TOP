@@ -112,4 +112,8 @@ body {
     margin: 5px 0;
 }
 
+.hidden-ctn {
+    display: none;
+}
+
 
