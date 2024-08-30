@@ -110,6 +110,10 @@ body {
 .cell-list > li {
     list-style: none;
     border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
 }
 
 .game-score {
