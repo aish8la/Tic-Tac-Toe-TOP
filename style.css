@@ -19,7 +19,6 @@ body {
     border: 5px solid black;
     border-radius: 15px;
     max-width: 90vw;
-    flex-shrink: 0;
     padding: 25px;
     display: flex;  
     flex-direction: column;
@@ -58,8 +57,10 @@ body {
 
 .player-form {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 30px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .player-form-section {
