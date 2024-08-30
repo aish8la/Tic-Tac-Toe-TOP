@@ -207,15 +207,11 @@ const gameController = (function() {
 
     const nextRound = function () {
         if (currentRound < maxRounds) {
-            //call to function for next round button 
             displayController.nextRoundButtonActivator(roundInitiator);
-            displayController.disableBoard();
-            //remove old event listeners and attach new event listener to cells here        
         } else {
-            // remove event listeners 
             console.log(overallWinnerCheck()); // once game ends give option to reset
         };
-
+        displayController.disableBoard();
     };
 
     const drawHandler = function() {
