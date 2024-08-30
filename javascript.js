@@ -241,6 +241,18 @@ const gameController = (function() {
 
 })();
 
+const displayController = (function() {
+    let titleContainer = document.querySelector('.title-ctn');
+    let gameContainer = document.querySelector('.game-ctn');
+    let startButton = document.querySelector('[data-btn="start-btn"]');
+    
+    
+    startButton.addEventListener('click', () => {
+        titleContainer.classList.toggle('hidden-ctn');
+        gameContainer.classList.toggle('hidden-ctn');
+    });
+})(); 
+
 
 
 //Initializer
