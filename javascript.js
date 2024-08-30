@@ -1,7 +1,7 @@
 //Game Board Module
 const gameBoard = (function() {
     
-    const board = [1,2,3,-1,0,1,-1];
+    const board = [];
     
     function initBoard() {
         for (let i = 0; i < 9; i++) {
@@ -111,6 +111,7 @@ const gameController = (function() {
     let currentTurn = 1;
     let currentPlayer;
     let winPattern;
+    let startPlayer;
     let winConditions = {
         row1: [0, 1, 2],
         row2: [3, 4, 5],
@@ -128,38 +129,41 @@ const gameController = (function() {
     };
 
 //Will determine the starting player if based on argument or if empty randomly selects the starting player.
-    const startingPlayer = function(player) {
-        if(!player) {
+    const startingPlayer = function() {
+        if(!startPlayer) {
             if(Math.random() < 0.5) {
                 currentPlayer = player1;
             } else {
                 currentPlayer = player2;
             }
         } else {
-            currentPlayer = player;
+            currentPlayer = startPlayer;
         };
     };
 
-    function playGame(player) {
+    function playGame() {
         playerModule.resetScore();
         currentRound = 0;
-        roundInitiator(player);
+        roundInitiator();
     }
 
-    function roundInitiator(player) {
+    function roundInitiator() {
+        displayController.nextRoundDisabler(roundInitiator);
         updatePlayers();
         currentRound++;
         gameBoard.initBoard();
         displayController.renderBoard();
-        startingPlayer(player);
+        displayController.enableBoard();
+        startingPlayer();
         currentTurn = 1;
         winStatus = undefined;
-        console.log(`Round ${currentRound}`); // round text updater function
+        displayController.updateRoundTextBox(`Round ${currentRound}`);
+        displayController.updateMessageBox(`Current Turn: ${currentPlayer.name}`);
     };
     
     const turnInitiator = function() {
             currentPlayer = (currentPlayer === player1) ? player2 : player1;
-            console.log(`Current Turn: ${currentPlayer.name}`);// call the function to update the text here
+            displayController.updateMessageBox(`Current Turn: ${currentPlayer.name}`);
     };
 
     const playerMove = function(cell, Element) {
@@ -204,7 +208,8 @@ const gameController = (function() {
     const nextRound = function () {
         if (currentRound < maxRounds) {
             //call to function for next round button 
-
+            displayController.nextRoundButtonActivator(roundInitiator);
+            displayController.disableBoard();
             //remove old event listeners and attach new event listener to cells here        
         } else {
             // remove event listeners 
@@ -215,13 +220,13 @@ const gameController = (function() {
 
     const drawHandler = function() {
         playerModule.drawsRecord();
-        console.log(`Round ${currentRound} is a Draw`); // text update function here
+        displayController.updateMessageBox(`Round ${currentRound} is a Draw`); // text update function here
         nextRound();
     };
 
     const winAction = function() {
         playerModule.winScoreRecord(currentPlayer);
-        console.log(`${currentPlayer.name} Wins Round: ${currentRound}.`); //call function to update the text
+        displayController.updateMessageBox(`${currentPlayer.name} Wins Round: ${currentRound}.`); //call function to update the text
         nextRound();
     };
 
@@ -255,19 +260,35 @@ const displayController = (function() {
     let playerNameInputs = document.querySelectorAll('input.player-name');
     let gameBoardElement = document.querySelector('#game-board-ctn');
     let messageBox = document.querySelector('#msg-box');
-    console.log(playerNameInputs);
+    const roundTextBox = document.querySelector('.round-indicator');
+    const nextRoundBtn = document.querySelector('#next-round');
+    const resetBtn = document.querySelector('#reset');
     
     startButton.addEventListener('click', function startGame() {
         let startPlayer;
         updateNames(playerNameInputs);
         gameController.playGame(startPlayer);
         toggleDisplay();
-        startButton.removeEventListener('click', startButton);
+        startButton.removeEventListener('click', startGame);
     });
 
-    gameBoardElement.addEventListener('click', function clickCell(e) {
-        markCell(e);
-    });
+    const enableBoard = function() {
+        gameBoardElement.addEventListener('click', markCell);
+    };
+
+    const disableBoard = function() {
+        gameBoardElement.removeEventListener('click', markCell);
+    };
+
+    const nextRoundButtonActivator = function(func) {
+        nextRoundBtn.classList.remove('disable-btn');
+        nextRoundBtn.addEventListener('click', func);
+    };
+
+    const nextRoundDisabler = function(func) {
+        nextRoundBtn.classList.add('disable-btn');
+        nextRoundBtn.removeEventListener('click', func);
+    };
 
     let updateNames = function(inputElements) {
       for (input of inputElements) {
@@ -286,9 +307,7 @@ const displayController = (function() {
         const targetElement = e.target;
         if (targetElement.getAttribute('data-type') === 'cell') {
             const cellNum = targetElement.getAttribute('data-cell-num');
-            if (gameController.playerMove(cellNum, targetElement) === 'cellMarked') {
-
-            }
+            gameController.playerMove(cellNum, targetElement) === 'cellMarked';
         };
     };
 
@@ -300,13 +319,16 @@ const displayController = (function() {
         messageBox.textContent = message;
     };
 
+    const updateRoundTextBox = function(message) {
+        roundTextBox.textContent = message;
+    };
+
     const renderBoard = function() {
         const boardArray = gameBoard.getBoardState();
         const valueRef = {
             '1': 'O',
             '-1': 'X'
         };
-
 
         for (let i = 0; i < boardArray.length; i++) {
             const currentCell = gameBoardElement.querySelector(`[data-cell-num="${i}"`);
@@ -321,7 +343,13 @@ const displayController = (function() {
         updateCell,
         updateMessageBox,
         renderBoard,
+        nextRoundButtonActivator,
+        nextRoundDisabler,
+        enableBoard,
+        disableBoard,
+        updateRoundTextBox,
     };
+
 })(); 
 
 
