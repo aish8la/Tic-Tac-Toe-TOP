@@ -159,6 +159,7 @@ const gameController = (function() {
         currentRound++;
         gameBoard.initBoard();
         displayController.renderBoard();
+        displayController.removeStyle();
         displayController.enableBoard();
         startingPlayer();
         currentTurn = 1;
@@ -196,6 +197,8 @@ const gameController = (function() {
                 };
                 if (boardValue === winValue) {
                     winPattern = key;
+                    displayController.colorWinningCells(winCombinations[winPattern]);
+                    console.log(winPattern);
                     winAction();
                     return;
                 };
@@ -235,11 +238,11 @@ const gameController = (function() {
     const overallWinnerCheck = function() {
         updatePlayers();
         if (player1.wins === player2.wins) {
-            return 'It\'s a Draw'; // add a function to update the message box
+            return displayController.updateRoundTextBox('It\'s A Draw');
         };
         if (player1.wins > player2.wins) {
-            return `Player: ${player1.name} Wins with ${player1.wins} Wins`;
-        } else return `Player: ${player2.name} Wins with ${player2.wins} Wins`;
+            return displayController.updateRoundTextBox(`Player: ${player1.name} Wins with ${player1.wins} Wins`);
+        } else return displayController.updateRoundTextBox(`Player: ${player2.name} Wins with ${player2.wins} Wins`);
     };
 
     const quitGame = function() {
@@ -284,6 +287,7 @@ const displayController = (function() {
         gameController.quitGame();
         toggleDisplay();
         initTitle();
+        removeStyle();
     });
 
     const enableBoard = function() {
@@ -353,6 +357,23 @@ const displayController = (function() {
         };
     };
 
+    function colorWinningCells(cellsIndex) {
+        const cellNums = cellsIndex;
+
+        for (let i = 0; i < cellNums.length; i++) {
+            const currentNum = cellNums[i];
+            currentCell = gameBoardElement.querySelector(`[data-cell-num="${currentNum}"]`);
+            currentCell.classList.toggle('winning-cells');
+        };
+    };
+
+    function removeStyle() {
+        cellList = document.querySelectorAll('.winning-cells');
+        cellList.forEach(element => {
+            element.classList.remove('winning-cells');
+        });
+    };
+
     return {
         updateCell,
         updateMessageBox,
@@ -363,6 +384,8 @@ const displayController = (function() {
         disableBoard,
         updateRoundTextBox,
         initTitle,
+        colorWinningCells,
+        removeStyle,
     };
 
 })(); 
