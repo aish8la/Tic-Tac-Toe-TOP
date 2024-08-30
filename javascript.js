@@ -1,7 +1,7 @@
 //Game Board Module
 const gameBoard = (function() {
     
-    const board = [];
+    const board = [1,2,3,-1,0,1,-1];
     
     function initBoard() {
         for (let i = 0; i < 9; i++) {
@@ -151,6 +151,7 @@ const gameController = (function() {
         currentRound++;
         if (currentRound <= maxRounds) {
             gameBoard.initBoard();
+            displayController.renderBoard();
             startingPlayer(player);
             currentTurn = 1;
             winStatus = undefined;
@@ -174,8 +175,8 @@ const gameController = (function() {
         if(gameBoard.addMark(currentPlayer.markValue, cell) === 'cell_marked') {
             displayController.updateCell(Element, currentPlayer.markType);
             winCheck();
-        } else console.log( 'cell is occupied');// add proper error handling here
-        } else console.log('Game has ended. Please Quit to start a new game'); // add a proper error handler here
+        } else return displayController.updateMessageBox('Cell Is Already Marked');
+        } else return displayController.updateMessageBox('Game Has Ended. Start New Game');
     };
 
     const winCheck = function() {
@@ -247,7 +248,8 @@ const displayController = (function() {
     let gameContainer = document.querySelector('.game-ctn');
     let startButton = document.querySelector('[data-btn="start-btn"]');
     let playerNameInputs = document.querySelectorAll('input.player-name');
-    let gameBoard = document.querySelector('#game-board-ctn');
+    let gameBoardElement = document.querySelector('#game-board-ctn');
+    let messageBox = document.querySelector('#msg-box');
     console.log(playerNameInputs);
     
     startButton.addEventListener('click', function startGame() {
@@ -258,7 +260,7 @@ const displayController = (function() {
         startButton.removeEventListener('click', startButton);
     });
 
-    gameBoard.addEventListener('click', function clickCell(e) {
+    gameBoardElement.addEventListener('click', function clickCell(e) {
         markCell(e);
     });
 
@@ -280,7 +282,7 @@ const displayController = (function() {
         if (targetElement.getAttribute('data-type') === 'cell') {
             const cellNum = targetElement.getAttribute('data-cell-num');
             if (gameController.playerMove(cellNum, targetElement) === 'cellMarked') {
-                
+
             }
         };
     };
@@ -288,8 +290,32 @@ const displayController = (function() {
     const updateCell = function(cellElement, mark) {
         cellElement.textContent = mark;
     };
+
+    const updateMessageBox = function(message) {
+        messageBox.textContent = message;
+    };
+
+    const renderBoard = function() {
+        const boardArray = gameBoard.getBoardState();
+        const valueRef = {
+            '1': 'O',
+            '-1': 'X'
+        };
+
+
+        for (let i = 0; i < boardArray.length; i++) {
+            const currentCell = gameBoardElement.querySelector(`[data-cell-num="${i}"`);
+            const markType = valueRef[boardArray[i].toString()];
+            if (!!markType) {
+                currentCell.textContent = markType;
+            } else currentCell.textContent = '';
+        };
+    };
+
     return {
         updateCell,
+        updateMessageBox,
+        renderBoard,
     };
 })(); 
 
@@ -297,7 +323,7 @@ const displayController = (function() {
 
 //Initializer
 addEventListener('DOMContentLoaded', () => {
-    gameBoard.initBoard();
+    // gameBoard.initBoard();
 });
 
 
