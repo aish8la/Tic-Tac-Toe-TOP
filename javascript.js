@@ -7,7 +7,6 @@ const gameBoard = (function() {
         for (let i = 0; i < 9; i++) {
             board[i] = 0;
         };
-        console.log(board);
     };
 
     function addMark(playerMark, boardIndex) {
@@ -151,6 +150,7 @@ const gameController = (function() {
         playerModule.resetScore();
         currentRound = 0;
         roundInitiator();
+        displayController.renderScore();
     };
 
     function roundInitiator() {
@@ -225,24 +225,27 @@ const gameController = (function() {
 
     const drawHandler = function() {
         playerModule.drawsRecord();
-        displayController.updateMessageBox(`Round ${currentRound} is a Draw`); // text update function here
+        displayController.renderScore();
+        displayController.updateMessageBox(`Round ${currentRound} is a Draw`);
         nextRound();
     };
 
     const winAction = function() {
         playerModule.winScoreRecord(currentPlayer);
-        displayController.updateMessageBox(`${currentPlayer.name} Wins Round: ${currentRound}.`); //call function to update the text
+        displayController.renderScore();
+        displayController.updateMessageBox(`${currentPlayer.name} Wins Round: ${currentRound}.`);
         nextRound();
     };
 
     const overallWinnerCheck = function() {
         updatePlayers();
+        displayController.renderScore();
         if (player1.wins === player2.wins) {
             return displayController.updateRoundTextBox('It\'s A Draw');
         };
         if (player1.wins > player2.wins) {
-            return displayController.updateRoundTextBox(`Player: ${player1.name} Wins with ${player1.wins} Wins`);
-        } else return displayController.updateRoundTextBox(`Player: ${player2.name} Wins with ${player2.wins} Wins`);
+            return displayController.updateRoundTextBox(`${player1.name} Wins with ${player1.wins} Wins`);
+        } else return displayController.updateRoundTextBox(`${player2.name} Wins with ${player2.wins} Wins`);
     };
 
     const quitGame = function() {
@@ -270,6 +273,8 @@ const displayController = (function() {
     const roundTextBox = document.querySelector('.round-indicator');
     const nextRoundBtn = document.querySelector('#next-round');
     const resetBtn = document.querySelector('#reset');
+    const scoreBoardList = document.querySelectorAll('.score-type > span');
+    console.log(scoreBoardList);
 
     const startGame = function() {
         let startPlayer;
@@ -374,6 +379,22 @@ const displayController = (function() {
         });
     };
 
+    function renderScore() {
+        const playerDetails = {};
+        playerDetails.player_1 = playerModule.getPlayer('player_1');
+        playerDetails.player_2 = playerModule.getPlayer('player_2');
+
+        for (let i = 0; i < scoreBoardList.length; i++) {
+            const scoreElement = scoreBoardList[i];
+            const scorePlayer = scoreElement.getAttribute('data-player-key');
+            const scoreType = scoreElement.getAttribute('data-score-type');
+            const player = playerDetails[scorePlayer];
+            const score = player[scoreType];
+
+            scoreElement.textContent = score;
+        };
+    };
+
     return {
         updateCell,
         updateMessageBox,
@@ -386,6 +407,7 @@ const displayController = (function() {
         initTitle,
         colorWinningCells,
         removeStyle,
+        renderScore,
     };
 
 })(); 
